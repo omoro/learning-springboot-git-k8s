@@ -3,13 +3,25 @@ package org.omoro.learning_springboot_git_k8s.service;
 import org.omoro.learning_springboot_git_k8s.model.Contact;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ContactService {
 
+    private final List<Contact>  contacts = new ArrayList<>();
+
+    public ContactService() {
+        contacts.add(new Contact(1L, "Brian", "brian@org.com"));
+        contacts.add(new Contact(2L, "Rania", "rania@org.com"));
+    }
+
     public List<Contact> getContacts() {
-        return List.of(new Contact(1L, "Brian", "brian@org.com"),
-                new Contact(2L, "Rania", "rania@org.com"));
+        return contacts;
+    }
+
+    public Contact addContact(Contact contact) {
+        contacts.add(contact);
+        return contact;
     }
 }
