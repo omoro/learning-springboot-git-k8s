@@ -1,51 +1,49 @@
 package org.omoro.learning_springboot_git_k8s.service;
 
+import org.omoro.learning_springboot_git_k8s.exception.ContactNotFoundException;
 import org.omoro.learning_springboot_git_k8s.model.Contact;
+import org.omoro.learning_springboot_git_k8s.repository.ContactRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ContactService {
 
-    private final List<Contact> contacts = new ArrayList<>();
+    private final ContactRepository contactRepository;
 
-    public ContactService() {
-        contacts.add(new Contact(1L, "Brian", "brian@org.com"));
-        contacts.add(new Contact(2L, "Rania", "rania@org.com"));
+    public ContactService(ContactRepository contactRepository) {
+        this.contactRepository = contactRepository;
     }
 
     public List<Contact> getContacts() {
-        return contacts;
+        return contactRepository.findAll();
     }
 
     public Contact getContactById(Long id) {
-        return contacts.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        return contactRepository.findById(id)
+                .orElseThrow(() -> new ContactNotFoundException(id));
     }
 
     public Contact addContact(Contact contact) {
-        contacts.add(contact);
-        return contact;
+        return contactRepository.save(contact);
     }
 
     public Contact updateContact(Long id, Contact updatedContact) {
-        for (int i = 0; i < contacts.size(); i++) {
-            if (contacts.get(i).getId().equals(id)) {
-                Contact contact = new Contact(id, updatedContact.getName(), updatedContact.getEmailAddress());
-                contacts.set(i, contact);
+        Contact contact = getContactById(id);
 
-                return contact;
-            }
-        }
+        contact.setName(updatedContact.getName());
+        contact.setEmailAddress(updatedContact.getEmailAddress());
 
-        return null;
+        return contactRepository.save(contact);
     }
 
     public boolean deleteContact(Long id) {
-        return contacts.removeIf(c -> c.getId().equals(id));
+        if (!contactRepository.existsById(id)) {
+            return false;
+        }
+
+        contactRepository.deleteById(id);
+        return true;
     }
 }

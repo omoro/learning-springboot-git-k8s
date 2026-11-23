@@ -1,11 +1,21 @@
 package org.omoro.learning_springboot_git_k8s.model;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.Objects;
 
+@Entity
+@Table(name = "contacts")
 public class Contact {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Contact name cannot be blank")
     private String name;
+
     private String emailAddress;
 
     public Contact() {

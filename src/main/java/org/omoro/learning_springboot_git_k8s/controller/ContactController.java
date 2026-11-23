@@ -1,10 +1,13 @@
 package org.omoro.learning_springboot_git_k8s.controller;
 
+import jakarta.validation.Valid;
 import org.omoro.learning_springboot_git_k8s.model.Contact;
 import org.omoro.learning_springboot_git_k8s.service.ContactService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.badRequest;
@@ -20,22 +23,39 @@ public class ContactController {
     }
 
     @GetMapping
-    public List<Contact> getContacts() {
-        return contactService.getContacts();
+    public ResponseEntity<List<Contact>> getContacts() {
+        List<Contact> contacts = contactService.getContacts();
+
+        if(contacts == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(contacts);
     }
 
     @GetMapping("/{id}")
-    public Contact getContact(@PathVariable Long id) {
-        return contactService.getContactById(id);
+    public ResponseEntity<Contact> getContact(@PathVariable Long id) {
+
+        Contact contact  = contactService.getContactById(id);
+
+        if (contact == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(contact);
     }
 
     @PostMapping
-    public Contact createContact(@RequestBody Contact contact) {
-        return contactService.addContact(contact);
+    public ResponseEntity<Contact> createContact(@Valid @RequestBody Contact contact) {
+        Contact createdContact = contactService.addContact(contact);
+
+        return ResponseEntity
+                .created(URI.create("/api/contacts/" + createdContact.getId()))
+                .body(createdContact);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Contact> updateContact(@PathVariable Long id, @RequestBody Contact contact) {
+    public ResponseEntity<Contact> updateContact(@PathVariable Long id, @Valid @RequestBody Contact contact) {
 
         if (contact.getId() != null && !contact.getId().equals(id)) {
             return ResponseEntity.badRequest().build();
