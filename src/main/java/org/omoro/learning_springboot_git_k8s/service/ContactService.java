@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public class ContactService {
 
-    private final List<Contact>  contacts = new ArrayList<>();
+    private final List<Contact> contacts = new ArrayList<>();
 
     public ContactService() {
         contacts.add(new Contact(1L, "Brian", "brian@org.com"));
@@ -21,7 +21,7 @@ public class ContactService {
     }
 
     public Contact getContactById(Long id) {
-        return  contacts.stream()
+        return contacts.stream()
                 .filter(c -> c.getId().equals(id))
                 .findFirst()
                 .orElse(null);
@@ -30,5 +30,18 @@ public class ContactService {
     public Contact addContact(Contact contact) {
         contacts.add(contact);
         return contact;
+    }
+
+    public Contact updateContact(Long id, Contact updatedContact) {
+        for (int i = 0; i < contacts.size(); i++) {
+            if (contacts.get(i).getId().equals(id)) {
+                Contact contact = new Contact(id, updatedContact.getName(), updatedContact.getEmailAddress());
+                contacts.set(i, contact);
+
+                return contact;
+            }
+        }
+
+        return null;
     }
 }
