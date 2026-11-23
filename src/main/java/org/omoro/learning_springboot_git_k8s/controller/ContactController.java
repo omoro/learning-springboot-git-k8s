@@ -21,6 +21,11 @@ public class ContactController {
         return contactService.getContacts();
     }
 
+    @GetMapping("/{id}")
+    public Contact getContact(@PathVariable Long id) {
+        return contactService.getContactById(id);
+    }
+
     @PostMapping
     public Contact createContact(@RequestBody Contact contact) {
         return contactService.addContact(contact);

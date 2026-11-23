@@ -20,6 +20,13 @@ public class ContactService {
         return contacts;
     }
 
+    public Contact getContactById(Long id) {
+        return  contacts.stream()
+                .filter(c -> c.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
     public Contact addContact(Contact contact) {
         contacts.add(contact);
         return contact;
