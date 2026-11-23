@@ -49,4 +49,15 @@ public class ContactController {
 
         return ResponseEntity.ok(updatedContact);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
+        boolean deleted = contactService.deleteContact(id);
+
+        if(!deleted){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.noContent().build();
+    }
 }

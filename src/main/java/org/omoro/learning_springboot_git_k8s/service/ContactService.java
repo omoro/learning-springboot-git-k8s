@@ -44,4 +44,8 @@ public class ContactService {
 
         return null;
     }
+
+    public boolean deleteContact(Long id) {
+        return contacts.removeIf(c -> c.getId().equals(id));
+    }
 }
